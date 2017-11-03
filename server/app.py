@@ -1,6 +1,9 @@
 #!flask/bin/python
-from flask import Flask, json, request
+from flask import Flask, json, request, jsonify
 from pprint import pprint
+
+from common.types import Challenge
+from challenges import mastermind
 
 app = Flask(__name__)
 
@@ -37,6 +40,18 @@ def api_message():
 
     else:
         return "415 Unsupported Media Type"
+
+
+@app.route('/CreateChallenge/<challenge_type>/', methods=['GET'])
+def new_game(challenge_type):
+    challenge_type_to_response = {Challenge.MASTERMIND.value: mastermind.request_new_game}
+
+    try:
+        response = jsonify(json.dump(challenge_type_to_response[challenge_type]()))
+    except KeyError:
+        response = "Invalid Challenge type "
+
+    return response
 
 
 if __name__ == '__main__':
