@@ -1,8 +1,12 @@
-# CMakeLists files in this project can
-# refer to the root source directory of the project as ${HELLO_SOURCE_DIR} and
-# to the root binary directory of the project as ${HELLO_BINARY_DIR}.
-cmake_minimum_required (VERSION 2.8.11)
-project (CppSkeleton)
+set(JSON_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/json/src PARENT_SCOPE)
 
+if(WIN32)
+    option(CMAKE_USE_OPENSSL "Use OpenSSL code. Experimental" OFF)
+endif()
+
+set(BUILD_CPR_TESTS OFF CACHE BOOL "Don't build cpr tests")
+find_package(CURL)
+if(CURL_FOUND)
+    set(USE_SYSTEM_CURL ON CACHE BOOL "Use the system curl for faster builds")
+endif()
 add_subdirectory(cpr)
-add_subdirectory(json)
