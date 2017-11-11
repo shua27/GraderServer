@@ -5,8 +5,7 @@
 
 int main()
 {
-    auto response = cpr::Get(cpr::Url{"https://httpbin.org/get"});
-    auto json = nlohmann::json::parse(response.text);
-    std::cout << json.dump(4) << std::endl;
+    auto response = cpr::Get(cpr::Url{"http://127.0.0.1:5000/"});
+    std::cout << response.text;
     return 0;
 }
