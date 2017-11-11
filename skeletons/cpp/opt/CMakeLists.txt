@@ -4,4 +4,5 @@
 cmake_minimum_required (VERSION 2.8.11)
 project (CppSkeleton)
 
-add_subdirectory(opt)
+add_subdirectory(cpr)
+add_subdirectory(json)
