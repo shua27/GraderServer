@@ -34,6 +34,8 @@ else()
     endif()
 endif()
 
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+
 set(CMAKE_USE_OPENSSL False CACHE BOOL Desc)
 set(CURL_CA_PATH none CACHE STRING NoPath)
 
