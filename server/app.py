@@ -47,7 +47,7 @@ def new_game(challenge_type):
     challenge_type_to_response = {Challenge.MASTERMIND.value: mastermind.request_new_game}
 
     try:
-        response = jsonify(json.dump(challenge_type_to_response[challenge_type]()))
+        response = jsonify(json.dumps(challenge_type_to_response[int(challenge_type)]()))
     except KeyError:
         response = "Invalid Challenge type "
 
