@@ -1,6 +1,6 @@
 [submodule "skeletons/cpp/opt/cpr"]
 	path = skeletons/cpp/opt/cpr
-	url = git@github.com:whoshuu/cpr.git
+	url = https://github.com/whoshuu/cpr
 [submodule "skeletons/cpp/json"]
 	path = skeletons/cpp/opt/json
 	url = https://github.com/nlohmann/json
