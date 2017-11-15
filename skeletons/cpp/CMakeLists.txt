@@ -5,6 +5,7 @@ cmake_minimum_required (VERSION 2.8.7)
 project (CppSkeleton)
 
 
+
 if(NOT ${CMAKE_VERSION} LESS 3.2)
     set(CMAKE_CXX_STANDARD 11)
     set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -33,6 +34,8 @@ else()
     endif()
 endif()
 
+set(CMAKE_USE_OPENSSL False CACHE BOOL Desc)
+set(CURL_CA_PATH none CACHE STRING NoPath)
 
 add_subdirectory(opt)
 include_directories(${CPR_INCLUDE_DIRS} ${JSON_INCLUDE_DIRS})
