@@ -15,7 +15,7 @@
 #include <vector>
 #include <iostream>
 #include <cstdint>
-#include "commands/mastermind-commands.h"
+#include "mastermind-commands.h"
 
 /*
  * ========================================================================
@@ -34,8 +34,8 @@ using POSSIBLE_CODES_TYPE = std::vector<std::vector<std::string>>;
 class GAME final
 {
 private:
-   std::istream & my_input_stream;
-   std::ostream & my_output_stream;
+   const std::string my_socket_address;
+
    uint32_t my_number_of_pegs;
    std::vector<std::string> my_color_choices;
    bool my_game_over = false;
@@ -53,7 +53,7 @@ public:
    GAME(GAME const &) = delete;
    GAME & operator=(GAME const &) = delete;
 
-   GAME(std::istream & inputStream, std::ostream & outputStream, bool debugEnabled);
+   GAME(std::string const & url, uint32_t port, bool debugEnabled);
 
    inline std::vector<std::string> getColors()
    {

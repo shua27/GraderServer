@@ -4,5 +4,8 @@
 cmake_minimum_required (VERSION 2.8.11)
 project (CppSkeleton)
 
+include_directories(commands game util)
+
+add_subdirectory(game)
 add_executable(submission main.cpp)
-target_link_libraries(submission ${CPR_LIBRARIES})
+target_link_libraries(submission ${CPR_LIBRARIES} game)
