@@ -38,7 +38,7 @@ GAME::GAME(std::string const & url, uint32_t port, bool debugEnabled)
    : my_socket_address(url + ":" + std::to_string(port)), my_debug_enabled(debugEnabled)
 {
    // Parse the line as JSON.
-   auto response(cpr::Get(cpr::Url{this->my_socket_address + "/Mastermind/CreateChallenge/"}));
+   auto response(cpr::Get(cpr::Url{this->my_socket_address + "/Mastermind/CreateChallenge"}));
 
    if (!response.error)
    {
@@ -94,22 +94,11 @@ MASTERMIND_GUESS_RESPONSE GAME::requestMastermindGuess(std::vector<uint32_t> con
 
    auto response(
       cpr::Post(
-         cpr::Url(this->my_socket_address + "/Mastermind/Guess"), cpr::Body(guessJson.dump())));
+         cpr::Url(this->my_socket_address + "/Mastermind/Guess"),
+         cpr::Body(guessJson.dump()),
+         cpr::Header{{"Content-Type", "application/json"}}));
 
-   // TODO : Send the guess to the server
-   //      this->my_output_stream << guessJson << std::endl << std::flush;
-
-   // TODO: Get a response from the server
-   //      std::string string;
-   //      std::getline(this->my_input_stream, string);
-
-   // Print the response if we're debugging.
-
-   // Parse the line as a JSON object.
-
-   std::string string = "Blah";
-   assert(false);   // We expect to fail for now, that's okay.
-   auto json(nlohmann::json::parse(string));
+   auto json(nlohmann::json::parse(response.text));
 
    if (json[COMMAND_KEY] == "MastermindGuessResponse")
    {
