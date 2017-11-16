@@ -44,10 +44,10 @@ def api_message():
 
 @app.route('/CreateChallenge/<challenge_type>/', methods=['GET'])
 def new_game(challenge_type):
-    challenge_type_to_response = {Challenge.MASTERMIND.value: mastermind.request_new_game}
+    challenge_type_to_response = {"mastermind": mastermind.request_new_game}
 
     try:
-        response_dict = challenge_type_to_response[int(challenge_type)]()
+        response_dict = challenge_type_to_response[challenge_type.lower()]()
         response = jsonify(response_dict)
     except KeyError:
         response = "Invalid Challenge type "

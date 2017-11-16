@@ -35,14 +35,10 @@ constexpr auto COMMAND_KEY = "Command";
  */
 
 GAME::GAME(std::string const & url, uint32_t port, bool debugEnabled)
-   : my_socket_address(url + "/" + std::to_string(port)), my_debug_enabled(debugEnabled)
+   : my_socket_address(url + ":" + std::to_string(port)), my_debug_enabled(debugEnabled)
 {
-   REQUEST_MASTERMIND_GUESS_COMMAND command{{"BLUE", "GREEN", "RED"}};
-
-   std::cout << "commandjson = " <<  command.json << "\n";
-
    // Parse the line as JSON.
-   auto response(cpr::Get(cpr::Url{"http://127.0.0.1:5000/CreateChallenge/1"}));
+   auto response(cpr::Get(cpr::Url{this->my_socket_address + "/CreateChallenge/Mastermind"}));
 
    if (!response.error)
    {
@@ -51,7 +47,7 @@ GAME::GAME(std::string const & url, uint32_t port, bool debugEnabled)
       std::cout << "Received the following Json from the GraderServer: {" << responseAsJson << "}\n";
 
       // Check that the received command is indeed the report to start a new game.
-      if (responseAsJson[COMMAND_KEY] == "ReportNewGame")
+      if (responseAsJson[COMMAND_KEY] == "ReportMastermindStarted")
       {
          // Populate member data about the new game.
          auto reportNewGameCommand(REPORT_NEW_GAME_COMMAND::fromJson(responseAsJson));
