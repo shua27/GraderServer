@@ -23,7 +23,7 @@
  * ========================================================================
  */
 
-using POSSIBLE_CODES_TYPE = std::vector<std::vector<std::string>>;
+using POSSIBLE_CODES_TYPE = std::vector<std::vector<uint32_t>>;
 
 /*
  * ========================================================================
@@ -37,7 +37,7 @@ private:
    const std::string my_socket_address;
 
    uint32_t my_number_of_pegs;
-   std::vector<std::string> my_color_choices;
+   std::vector<uint32_t> my_color_choices;
    bool my_game_over = false;
    bool my_debug_enabled = false;
 
@@ -46,7 +46,7 @@ private:
    void addVectorToSet(
       POSSIBLE_CODES_TYPE & outputSet,
       std::vector<uint32_t> const & indexVector,
-      std::vector<std::string> const & availableColors) const;
+      std::vector<uint32_t> const & availableColors) const;
 
 public:
    GAME() = delete;
@@ -55,7 +55,7 @@ public:
 
    GAME(std::string const & url, uint32_t port, bool debugEnabled);
 
-   inline std::vector<std::string> getColors()
+   inline std::vector<uint32_t> getColors()
    {
       return this->my_color_choices;
    }
@@ -70,7 +70,7 @@ public:
       return this->my_game_over;
    }
 
-   MASTERMIND_GUESS_RESPONSE requestMastermindGuess(std::vector<std::string> const & guess);
+   MASTERMIND_GUESS_RESPONSE requestMastermindGuess(std::vector<uint32_t> const & guess);
 
    POSSIBLE_CODES_TYPE getAllPossibleCodes() const;
 };

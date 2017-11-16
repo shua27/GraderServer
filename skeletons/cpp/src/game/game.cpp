@@ -38,13 +38,14 @@ GAME::GAME(std::string const & url, uint32_t port, bool debugEnabled)
    : my_socket_address(url + ":" + std::to_string(port)), my_debug_enabled(debugEnabled)
 {
    // Parse the line as JSON.
-   auto response(cpr::Get(cpr::Url{this->my_socket_address + "/CreateChallenge/Mastermind"}));
+   auto response(cpr::Get(cpr::Url{this->my_socket_address + "/Mastermind/CreateChallenge/"}));
 
    if (!response.error)
    {
       auto responseAsJson(nlohmann::json::parse(response.text));
 
-      std::cout << "Received the following Json from the GraderServer: {" << responseAsJson << "}\n";
+      std::cout << "Received the following Json from the GraderServer: {" << responseAsJson
+                << "}\n";
 
       // Check that the received command is indeed the report to start a new game.
       if (responseAsJson[COMMAND_KEY] == "ReportMastermindStarted")
@@ -64,18 +65,19 @@ GAME::GAME(std::string const & url, uint32_t port, bool debugEnabled)
       }
       else
       {
-         std::cerr << "Unexpected command while constructing game: Expected={ReportStartGame}, Received={"
-                   << responseAsJson[COMMAND_KEY] << "}" << std::endl;
+         std::cerr
+            << "Unexpected command while constructing game: Expected={ReportStartGame}, Received={"
+            << responseAsJson[COMMAND_KEY] << "}" << std::endl;
          this->my_game_over = true;
       }
    }
    else
    {
-      std::cerr << "Failed connecting to game server";
+      std::cerr << "Error getting info from st";
    }
 }
 
-MASTERMIND_GUESS_RESPONSE GAME::requestMastermindGuess(std::vector<std::string> const & guess)
+MASTERMIND_GUESS_RESPONSE GAME::requestMastermindGuess(std::vector<uint32_t> const & guess)
 {
    auto correct(false);
    uint32_t numCorrect(0);
@@ -89,6 +91,10 @@ MASTERMIND_GUESS_RESPONSE GAME::requestMastermindGuess(std::vector<std::string> 
    {
       std::cerr << "Guessing " << guessJson << std::endl;
    }
+
+   auto response(
+      cpr::Post(
+         cpr::Url(this->my_socket_address + "/Mastermind/Guess"), cpr::Body(guessJson.dump())));
 
    // TODO : Send the guess to the server
    //      this->my_output_stream << guessJson << std::endl << std::flush;
@@ -141,9 +147,9 @@ POSSIBLE_CODES_TYPE GAME::makePermutationsOfSets(POSSIBLE_CODES_TYPE const & inp
 void GAME::addVectorToSet(
    POSSIBLE_CODES_TYPE & outputSet,
    std::vector<uint32_t> const & indexVector,
-   std::vector<std::string> const & availableColors) const
+   std::vector<uint32_t> const & availableColors) const
 {
-   std::vector<std::string> vectorToAddToSet;
+   std::vector<uint32_t> vectorToAddToSet;
 
    for (uint32_t i = 0; i < indexVector.size() - 1; i++)
    {

@@ -39,7 +39,7 @@ struct REPORT_NEW_GAME_COMMAND final
 {
    REPORT_NEW_GAME_COMMAND() = delete;
    const uint32_t numberOfPegs;
-   const std::vector<std::string> colors;
+   const std::vector<uint32_t> colors;
 
    static constexpr auto COLOR_KEY = "ColorList";
    static constexpr auto PEG_KEY = "PegCount";
@@ -49,7 +49,7 @@ struct REPORT_NEW_GAME_COMMAND final
       auto args(json[ARGS_KEY]);
 
       uint32_t pegCount(args[PEG_KEY]);
-      std::vector<std::string> colors;
+      std::vector<uint32_t> colors;
 
       for (auto const & color : args[COLOR_KEY])
       {
@@ -68,7 +68,7 @@ struct REQUEST_MASTERMIND_GUESS_COMMAND final
    REQUEST_MASTERMIND_GUESS_COMMAND() = delete;
    nlohmann::json json;
 
-   REQUEST_MASTERMIND_GUESS_COMMAND(std::vector<std::string> const & guess)
+   REQUEST_MASTERMIND_GUESS_COMMAND(std::vector<uint32_t> const & guess)
    {
       this->json = {{"Args", {{"BoardRow", guess}}}, {"Command", "RequestMastermindGuess"}};
    }

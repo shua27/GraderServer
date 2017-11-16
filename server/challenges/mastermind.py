@@ -1,20 +1,30 @@
 from pprint import pprint
-from random import randint
+
+from server import app
+
+# Default number of colors and pegs
+__number_of_colors = 6
+__number_of_pegs = 4
 
 
-def _get_color_list():
-    return ["GREEN", "BLUE", "RED"]
+@app.route('/Mastermind/SetConfig/<number_of_colors>/number_of_pegs')
+def set_configuration(number_of_colors, number_of_pegs):
+    global __number_of_colors
+    global __number_of_pegs
+
+    __number_of_colors = number_of_colors
+    __number_of_pegs = number_of_pegs
+
+    return "OK"
 
 
-def _get_number_of_pegs():
-    return randint(1, 5)
-
-
+@app.route('/Mastermind/CreateChallenge/', methods=['GET'])
 def request_new_game():
     return {"Command": "ReportMastermindStarted",
-            "Args": {"ColorList": ["GREEN", "BLUE", "RED"], "PegCount": _get_number_of_pegs()}}
+            "Args": {"ColorList": range(1, __number_of_colors), "PegCount": __number_of_pegs}}
 
 
+@app.route('/Mastermind/Guess/', methods=['POST'])
 def request_mastermind_move(data):
     print("Mastermind move received. Data:")
     pprint(data)

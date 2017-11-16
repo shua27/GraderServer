@@ -58,7 +58,7 @@ void runGame(GAME & game)
    {
       // TODO: Your code here!
       // Currently, the program guesses by cycling through the available color list.
-      std::vector<std::string> guess;
+      std::vector<uint32_t> guess;
 
       // Loop for game.getNumberOfPegs times. Populating a guess by cycling through the colors
       // available in game.getColors().
