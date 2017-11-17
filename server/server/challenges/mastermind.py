@@ -77,6 +77,7 @@ def request_mastermind_move():
     cache["guess_count"] += 1
 
     if cache["guess_count"] == cache["max_guesses"]:
+        cache["guess_count"] = 0
         return jsonify({"Command": "ReportGameOver",
                         "Args": {"Correct": correct,
                                  "GuessCount": cache["guess_count"]}})
