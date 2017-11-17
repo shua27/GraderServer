@@ -5,11 +5,44 @@ from flask import jsonify, request
 
 from server import app
 
-# Default number of colors and pegs
-__number_of_colors = 6
-__number_of_pegs = 4
+cache = {
+    "number_of_colors": 6,
+    "number_of_pegs": 4,
+    "current_code": [],
+    "guess_count": 0,
+    "max_guesses": 300,
+}
 
-__current_code = []
+
+def _check_guess(guess):
+    """
+
+    :param guess: The client's guess at the current code.
+    :return: A boolean indicating if the guess was correct.
+    :return: An int representing the number of pegs in the correct positions
+    :return: An int representing the number of correct colors in the wrong position
+    """
+    correct = True if guess == cache["current_code"] else False
+    correct_pegs = 0
+    correct_peg_colors = 0
+
+    for idx, (a, b) in enumerate(zip(guess, cache["current_code"])):
+        if a == b:
+            correct_pegs += 1
+            guess[idx] = -1
+
+    for elem in cache["current_code"]:
+        if elem in guess:
+            correct_peg_colors += 1
+            guess.remove(elem)
+
+    return correct, correct_pegs, correct_peg_colors
+
+
+if __name__ == "__main__":
+    from pprint import pprint
+
+    pprint(_check_guess([1, 2, 3, 4]))
 
 
 @app.route('/')
@@ -19,30 +52,36 @@ def index():
 
 @app.route('/Mastermind/SetConfig/<number_of_colors>/number_of_pegs')
 def set_configuration(number_of_colors, number_of_pegs):
-    global __number_of_colors
-    global __number_of_pegs
-
-    __number_of_colors = number_of_colors
-    __number_of_pegs = number_of_pegs
+    cache["number_of_colors"] = number_of_colors
+    cache["number_of_pegs"] = number_of_pegs
 
     return "OK"
 
 
 @app.route('/Mastermind/CreateChallenge', methods=['GET'])
 def request_new_game():
-    global __current_code
-    __current_code = [random.choice(list(range(1, __number_of_colors))) for _ in range(__number_of_pegs)]
+    cache["current_code"] = [random.choice(list(range(1, cache["number_of_colors"])))
+                             for _ in range(cache["number_of_pegs"])]
 
-    print("Current code ={}".format(__current_code))
+    print("Current code ={}".format(cache["current_code"]))
 
     return jsonify({"Command": "ReportMastermindStarted",
-                    "Args": {"ColorList": list(range(1, __number_of_colors)), "PegCount": __number_of_pegs}})
+                    "Args": {"ColorList": list(range(1, cache["number_of_colors"])),
+                             "PegCount": cache["number_of_pegs"]}})
 
 
 @app.route('/Mastermind/Guess', methods=['POST'])
 def request_mastermind_move():
     print("Mastermind move received. Data:")
-    # guess = json.loads(request.get_json())
+    correct, correct_pegs, correct_peg_colors = _check_guess(request.get_json()["Args"]["BoardRow"])
+    cache["guess_count"] += 1
 
-    return jsonify({"Command": "MastermindGuessResponse",
-                    "Args": {"Correct": False, "CorrectPegs": 0, "CorrectPegColors": 0}})
+    if cache["guess_count"] == cache["max_guesses"]:
+        return jsonify({"Command": "ReportGameOver",
+                        "Args": {"Correct": correct,
+                                 "GuessCount": cache["guess_count"]}})
+    else:
+        return jsonify({"Command": "MastermindGuessResponse",
+                        "Args": {"Correct": correct,
+                                 "CorrectPegs": correct_pegs,
+                                 "CorrectPegColors": correct_peg_colors}})

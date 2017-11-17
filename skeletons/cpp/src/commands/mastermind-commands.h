@@ -68,7 +68,7 @@ struct REQUEST_MASTERMIND_GUESS_COMMAND final
    REQUEST_MASTERMIND_GUESS_COMMAND() = delete;
    nlohmann::json json;
 
-   REQUEST_MASTERMIND_GUESS_COMMAND(std::vector<uint32_t> const & guess)
+   explicit REQUEST_MASTERMIND_GUESS_COMMAND(std::vector<uint32_t> const & guess)
    {
       this->json = {{"Args", {{"BoardRow", guess}}}, {"Command", "RequestMastermindGuess"}};
    }
@@ -99,6 +99,23 @@ struct MASTERMIND_GUESS_RESPONSE final
    {
       return this->correctCount == other.correctCount &&
              this->correctPegColors == other.correctPegColors;
+   }
+};
+
+/**
+ * @brief Received command which contains information about a new game.
+ */
+struct MASTERMIND_GAME_OVER_REPORT final
+{
+   MASTERMIND_GAME_OVER_REPORT() = delete;
+   const bool correct;
+   const uint32_t guessCount;
+
+   static inline MASTERMIND_GAME_OVER_REPORT fromJson(nlohmann::json const & json)
+   {
+      auto args(json[ARGS_KEY]);
+
+      return {args["Correct"], args["GuessCount"]};
    }
 };
 

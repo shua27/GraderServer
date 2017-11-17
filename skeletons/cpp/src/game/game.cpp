@@ -107,6 +107,14 @@ MASTERMIND_GUESS_RESPONSE GAME::requestMastermindGuess(std::vector<uint32_t> con
       numCorrect = mastermindGuessResponse.correctCount;
       numColorCorrect = mastermindGuessResponse.correctPegColors;
    }
+   else if (json[COMMAND_KEY] == "ReportGameOver")
+   {
+      auto gameOverReport(MASTERMIND_GAME_OVER_REPORT::fromJson(json));
+      this->my_game_over = true;
+
+      std::cout << (gameOverReport.correct ? "Success!" : "Failure:") << " "
+                << gameOverReport.guessCount << " guesses";
+   }
    else
    {
       std::cerr << "Unexpected command while constructing game: "
