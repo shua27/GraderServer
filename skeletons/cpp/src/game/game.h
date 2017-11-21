@@ -23,7 +23,8 @@
  * ========================================================================
  */
 
-using POSSIBLE_CODES_TYPE = std::vector<std::vector<uint32_t>>;
+using COLOR_TYPE = uint32_t;
+using POSSIBLE_CODES_TYPE = std::vector<std::vector<COLOR_TYPE>>;
 
 /*
  * ========================================================================
@@ -37,7 +38,7 @@ private:
    const std::string my_socket_address;
 
    uint32_t my_number_of_pegs;
-   std::vector<uint32_t> my_color_choices;
+   std::vector<COLOR_TYPE> my_color_choices;
    bool my_game_over = false;
    bool my_debug_enabled = false;
 
@@ -45,8 +46,8 @@ private:
 
    void addVectorToSet(
       POSSIBLE_CODES_TYPE & outputSet,
-      std::vector<uint32_t> const & indexVector,
-      std::vector<uint32_t> const & availableColors) const;
+      std::vector<COLOR_TYPE> const & indexVector,
+      std::vector<COLOR_TYPE> const & availableColors) const;
 
 public:
    GAME() = delete;

@@ -48,38 +48,88 @@ constexpr bool DEBUG_ENABLED = true;   // Set to true to print debug messages .
  * ========================================================================
  */
 
+MASTERMIND_GUESS_RESPONSE testCodeAgainstGuess(
+   std::vector<COLOR_TYPE> const & codeIn,
+   std::vector<COLOR_TYPE> const & guessIn)
+{
+   auto code(codeIn);
+   auto guess(guessIn);
+   uint32_t numCorrect(0);
+   uint32_t numColorCorrect(0);
+
+   std::vector<std::uint32_t> indexesToErase;
+
+   for (uint32_t i = 0; i < code.size(); i++)
+   {
+      if (code[i] == guess[i])
+      {
+         numCorrect++;
+         code[i] = 0;
+         guess[i] = 0;
+      }
+   }
+
+   code.erase(
+      std::remove_if(
+         code.begin(), code.end(), [](COLOR_TYPE const & color) { return color == 0; }),
+      code.end());
+
+   guess.erase(
+      std::remove_if(
+         guess.begin(), guess.end(), [](COLOR_TYPE const & color) { return color == 0; }),
+      guess.end());
+
+   while (!guess.empty())
+   {
+      auto color(guess.back());
+      guess.pop_back();
+
+      auto it = std::find(code.begin(), code.end(), color);
+
+      if (it != code.end())
+      {
+         numColorCorrect++;
+         code.erase(it);
+      }
+   }
+
+   return {false, numCorrect, numColorCorrect};
+}
+
+void filterCodes(
+   std::vector<COLOR_TYPE> const & guess,
+   MASTERMIND_GUESS_RESPONSE const & response,
+   POSSIBLE_CODES_TYPE & currentPossibilities)
+{
+   currentPossibilities.erase(
+      std::remove_if(
+         currentPossibilities.begin(),
+         currentPossibilities.end(),
+         [&guess, &response](std::vector<COLOR_TYPE> const & code) {
+            bool sameAnswer(testCodeAgainstGuess(code, guess) == response);
+            return !sameAnswer;
+         }),
+      currentPossibilities.end());
+}
+
 void runGame(GAME & game)
 {
    // A list of all of the possible solutions, given this game board configuration.
    auto possibleCodes(game.getAllPossibleCodes());
+
+   auto colors(game.getColors());
 
    // Loop until the user has either guessed correctly or made some input error.
    while (!game.gameOver())
    {
       // TODO: Your code here!
       // Currently, the program guesses by cycling through the available color list.
-      std::vector<uint32_t> guess;
+      auto guess(possibleCodes.back());
+      possibleCodes.pop_back();
 
-      // Loop for game.getNumberOfPegs times. Populating a guess by cycling through the colors
-      // available in game.getColors().
-      uint32_t colorIndex = 0;
-      for (uint32_t i = 0; i < game.getNumberOfPegs(); i++)
-      {
-         // Get a random color, add it to the guess.
-         guess.push_back(game.getColors()[colorIndex++]);
-
-         // Cycle back to the start of the color array if we reached the end of it.
-         if (colorIndex >= game.getNumberOfPegs())
-         {
-            colorIndex = 0;
-         }
-      }
-
-      // game.requestMastermindGuess is the function you'll call to make a move in the game.
-      // This function takes a std::vector of std::strings which represents your (in-order) guess.
-      // This function will return a MASTERMIND_GUESS_RESPONSE object which has information about
-      // the number of correct pegs and the number of correct colors.
       auto mastermindGuessResponse(game.requestMastermindGuess(guess));
+
+      filterCodes(guess, mastermindGuessResponse, possibleCodes);
 
       // Access the submission response in order to get the following information:
       //  The number of pegs that are correct in position and color

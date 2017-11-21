@@ -1,8 +1,6 @@
-import json
 import random
 
 from flask import jsonify, request
-
 from server import app
 
 cache = {
@@ -37,12 +35,6 @@ def _check_guess(guess):
             guess.remove(elem)
 
     return correct, correct_pegs, correct_peg_colors
-
-
-if __name__ == "__main__":
-    from pprint import pprint
-
-    pprint(_check_guess([1, 2, 3, 4]))
 
 
 @app.route('/')
@@ -80,7 +72,7 @@ def request_mastermind_move():
         cache["guess_count"] = 0
         return jsonify({"Command": "ReportGameOver",
                         "Args": {"Correct": correct,
-                                 "GuessCount": cache["guess_count"]}})
+                                 "GuessCount": cache["max_guesses"]}})
     else:
         return jsonify({"Command": "MastermindGuessResponse",
                         "Args": {"Correct": correct,

@@ -77,7 +77,7 @@ GAME::GAME(std::string const & url, uint32_t port, bool debugEnabled)
    }
 }
 
-MASTERMIND_GUESS_RESPONSE GAME::requestMastermindGuess(std::vector<uint32_t> const & guess)
+MASTERMIND_GUESS_RESPONSE GAME::requestMastermindGuess(std::vector<COLOR_TYPE> const & guess)
 {
    auto correct(false);
    uint32_t numCorrect(0);
@@ -143,12 +143,12 @@ POSSIBLE_CODES_TYPE GAME::makePermutationsOfSets(POSSIBLE_CODES_TYPE const & inp
 
 void GAME::addVectorToSet(
    POSSIBLE_CODES_TYPE & outputSet,
-   std::vector<uint32_t> const & indexVector,
-   std::vector<uint32_t> const & availableColors) const
+   std::vector<COLOR_TYPE> const & indexVector,
+   std::vector<COLOR_TYPE> const & availableColors) const
 {
-   std::vector<uint32_t> vectorToAddToSet;
+   std::vector<COLOR_TYPE> vectorToAddToSet;
 
-   for (uint32_t i = 0; i < indexVector.size() - 1; i++)
+   for (auto i = 0u; i < indexVector.size() - 1; i++)
    {
       vectorToAddToSet.push_back(availableColors[indexVector.at(i)]);
    }
@@ -160,11 +160,11 @@ POSSIBLE_CODES_TYPE GAME::getAllPossibleCodes() const
    POSSIBLE_CODES_TYPE comboSet;
    auto numberOfColors(this->my_color_choices.size());
    numberOfColors--;
-   std::vector<uint32_t> indexVector(this->my_number_of_pegs + 1, 0);
+   std::vector<COLOR_TYPE> indexVector(this->my_number_of_pegs + 1, 0);
 
    while (true)
    {
-      for (uint32_t i = 0; i < this->my_number_of_pegs; ++i)
+      for (auto i = 0u; i < this->my_number_of_pegs; ++i)
       {
          if (indexVector[i] > numberOfColors)
          {
@@ -189,8 +189,8 @@ POSSIBLE_CODES_TYPE GAME::getAllPossibleCodes() const
 
    if (this->my_debug_enabled)
    {
-      std::cerr << "Built container: Size=" << outputSet.size() << "\n";
-      util::streamContainerContainerElements(std::cerr, outputSet);
+//      std::cerr << "Built container: Size=" << outputSet.size() << "\n";
+//      util::streamContainerContainerElements(std::cerr, outputSet);
    }
    return outputSet;
 }
