@@ -23,9 +23,6 @@ public class Main {
     }
 
     public static void main(String[] args) throws Exception{
-
-        System.out.println(getHTML("http://127.0.0.1"));
-
-        System.out.println("Hello world");
+        Mastermind game = new Mastermind();
     }
 }
