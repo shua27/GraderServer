@@ -1,0 +1,9 @@
+{
+  "ContestantConfig": {
+    "Name": "John Smith",
+    "School": "The College University of Pennsylvania"
+  },
+  "GameConfig": {
+    "DebugLevel": 1
+  }
+}
