@@ -4,6 +4,10 @@ import java.util.ArrayList;
 
 public class Main {
 
+    private static void setLoggingLevel(){
+
+    }
+
     private static void playGame(Mastermind game) {
         // A list of all of the possible solutions, given this game board configuration.
         ArrayList<ArrayList<Integer>> possibleCodes = game.getAllPossibleCodes();
@@ -31,6 +35,8 @@ public class Main {
     }
 
     public static void main(String[] args) throws Exception {
+        GameLogging logger = new GameLogging();
+
         Mastermind game = new Mastermind();
         playGame(game);
     }

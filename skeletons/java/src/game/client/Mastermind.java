@@ -15,7 +15,7 @@ class Mastermind {
     private ArrayList<ArrayList<Integer>> permutations = new ArrayList<>();
 
     private boolean gameOver = false;
-    private static final Logger LOGGER = Logger.getLogger(Mastermind.class.getName());
+    private static final Logger LOGGER = Logger.getGlobal();
 
     public ArrayList<ArrayList<Integer>> getAllPossibleCodes() {
         generatePermutations(this.my_colors, this.my_peg_count, new ArrayList<Integer>());
